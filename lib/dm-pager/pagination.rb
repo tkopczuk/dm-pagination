@@ -38,10 +38,12 @@ module DataMapper
       page = 1 unless (page = page.to_i) && page > 1
       per_page    = pager_option(:per_page, options).to_i
       query = options.dup
+      order = pager_option(:order, options)
+      order ||= [:id.desc]
       collection = new_collection scoped_query(options = {
         :limit => per_page,
         :offset => (page - 1) * per_page,
-        :order => [:id.desc]
+        :order => order
       }.merge(query))
       query.delete :order
       options.merge! :total => count(query), page_param => page, :page_param => page_param
